@@ -1,4 +1,12 @@
 // This shows a simple example of how to archive the build output artifacts.
+
+pipeline {
+
+
+    parameters {
+        gitParameter branch: '', branchFilter: '.*', defaultValue: 'origin/master', description: 'Which Branch ?', name: 'BRANCH_NAME_PARAM', quickFilterEnabled: true, selectedValue: 'NONE', sortMode: 'NONE', tagFilter: '*', type: 'PT_BRANCH_TAG', useRepository: 'https://github.com/anasoid/jenkins-jmeter-test.git'
+    }
+	
 node {
     stage "Create build output"
     
@@ -15,4 +23,7 @@ node {
     
     // Archive the build output artifacts.
     archiveArtifacts artifacts: 'output/*.txt', excludes: 'output/*.md'
+}
+
+
 }
