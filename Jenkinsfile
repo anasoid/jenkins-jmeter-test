@@ -1,28 +1,28 @@
-// This shows a simple example of how to archive the build output artifacts.
+// While you can't use Groovy's .collect or similar methods currently, you can
+// still transform a list into a set of actual build steps to be executed in
+// parallel.
 
-pipeline {
- 
-    parameters {
-        gitParameter branch: '', branchFilter: '.*', defaultValue: 'origin/master', description: 'Which Branch ?', name: 'BRANCH_NAME_PARAM', quickFilterEnabled: true, selectedValue: 'NONE', sortMode: 'NONE', tagFilter: '*', type: 'PT_BRANCH_TAG', useRepository: 'https://github.com/anasoid/jenkins-jmeter-test.git'
-    }
-	
-node {
-    stage "Create build output"
-    
-    // Make the output directory.
-    sh "mkdir -p output"
+// Our initial list of strings we want to echo in parallel
+def stringsToEcho = ["a", "b", "c", "d"]
 
-    // Write an useful file, which is needed to be archived.
-    writeFile file: "output/usefulfile.txt", text: "This file is useful, need to archive it."
-
-    // Write an useless file, which is not needed to be archived.
-    writeFile file: "output/uselessfile.md", text: "This file is useless, no need to archive it."
-
-    stage "Archive build output"
-    
-    // Archive the build output artifacts.
-    archiveArtifacts artifacts: 'output/*.txt', excludes: 'output/*.md'
+// The map we'll store the parallel steps in before executing them.
+def stepsForParallel = stringsToEcho.collectEntries {
+    ["echoing ${it}" : transformIntoStep(it)]
 }
 
+// Actually run the steps in parallel - parallel takes a map as an argument,
+// hence the above.
+parallel stepsForParallel
 
+// Take the string and echo it.
+def transformIntoStep(inputString) {
+    // We need to wrap what we return in a Groovy closure, or else it's invoked
+    // when this method is called, not when we pass it to parallel.
+    // To do this, you need to wrap the code below in { }, and either return
+    // that explicitly, or use { -> } syntax.
+    return {
+        stage(inputString) {
+            echo inputString
+        }
+    }
 }
