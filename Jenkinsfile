@@ -17,6 +17,9 @@ parallel stepsForParallel
 
 
 
+
+}
+
 // Take the string and echo it.
 def prepareJmeterNode(serverSSH) {
     // We need to wrap what we return in a Groovy closure, or else it's invoked
@@ -40,6 +43,4 @@ def prepareJmeterNode(serverSSH) {
 
     }
   }
-}
-
 }
