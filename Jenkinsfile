@@ -86,6 +86,7 @@ def startJmeterMaster(serverSSH) {
       remote.password = 'root'
       remote.allowAnyHosts = true
       sshCommand remote: remote, command: "echo $PATH"
+      sshCommand remote: remote, command: "printenv"
       sshCommand remote: remote, command: "cd /test; jmeter -X -n -f  -e -l /tmp/results.jtl  -t  ./example.jmx -o /reports "
 
 
