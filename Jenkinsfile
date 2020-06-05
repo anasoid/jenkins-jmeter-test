@@ -39,6 +39,7 @@ node {
       remote.password = 'root'
       remote.allowAnyHosts = true
       echo serverSSH
+      sh "ls -l"
       sshCommand remote: remote, command: "ls -la /"
       sshRemove remote: remote, path: "/test"
       sshPut remote: remote, from: 'test', into: '/'
