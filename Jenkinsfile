@@ -24,19 +24,19 @@ def prepareJmeterNode(serverSSH) {
     // that explicitly, or use { -> } syntax.
     return {
 
-        
 
 
     stage('Prepare Node  ' + serverSSH) {
-     echo serverSSH
+      echo serverSSH
       def remote = [:]
       remote.name = serverSSH
       remote.host = serverSSH
       remote.user = 'root'
       remote.password = 'root'
       remote.allowAnyHosts = true
+      echo serverSSH
       sshCommand remote: remote, command: "ls -lrt"
-      sshCommand remote: remote, command: "for i in {1..5}; do echo -n \"Loop \$i \"; date ; sleep 1; done"
+
     }
-    }
+  }
 }
