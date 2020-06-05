@@ -15,7 +15,7 @@ checkout scm
 def prepareForParallel = slaves.collectEntries {
     ["echoing ${it}" : prepareJmeterNode(it)]
 }
-prepareForParallel.putAt("echoing ${master}",master)
+prepareForParallel.putAt("echoing ${master}",prepareJmeterNode(master))
 
 
 
