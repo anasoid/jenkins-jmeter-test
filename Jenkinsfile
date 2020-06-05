@@ -7,10 +7,16 @@
 // Our initial list of strings we want to echo in parallel
 def stringsToEcho = ["192.168.99.100:2222", "192.168.99.100:2223", "192.168.99.100:2224"]
 
+
+checkout scm 
+
 // The map we'll store the parallel steps in before executing them.
 def stepsForParallel = stringsToEcho.collectEntries {
     ["echoing ${it}" : prepareJmeterNode(it)]
 }
+
+
+
 
 // Actually run the steps in parallel - parallel takes a map as an argument,
 // hence the above.
