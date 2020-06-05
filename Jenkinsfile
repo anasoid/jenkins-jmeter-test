@@ -1,6 +1,7 @@
-// While you can't use Groovy's .collect or similar methods currently, you can
-// still transform a list into a set of actual build steps to be executed in
-// parallel.
+
+
+pipeline {
+  agent any
 
 // Our initial list of strings we want to echo in parallel
 def stringsToEcho = ["192.168.99.100:2222", "192.168.99.100:2223", "192.168.99.100:2224"]
@@ -39,4 +40,6 @@ def prepareJmeterNode(serverSSH) {
 
     }
   }
+}
+
 }
