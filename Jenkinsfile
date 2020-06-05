@@ -31,8 +31,10 @@ node {
     stage('Prepare Node  ' + serverSSH) {
       echo serverSSH
       def remote = [:]
+      def hostport= serverSSH.tokenize(":")
       remote.name = serverSSH
-      remote.host = serverSSH
+      remote.host = hostport[0]
+      remote.port = hostport[1]
       remote.user = 'root'
       remote.password = 'root'
       remote.allowAnyHosts = true
