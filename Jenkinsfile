@@ -23,16 +23,15 @@ def prepareJmeterNode(serverSSH) {
     // To do this, you need to wrap the code below in { }, and either return
     // that explicitly, or use { -> } syntax.
     return {
-        stage(serverSSH) {
-            echo serverSSH
-        }
+
         
 
 
     stage('Prepare Node  ' + serverSSH) {
+     echo serverSSH
       def remote = [:]
-          remote.name = serverSSH
-      remote.host = server
+      remote.name = serverSSH
+      remote.host = serverSSH
       remote.user = 'root'
       remote.password = 'root'
       remote.allowAnyHosts = true
