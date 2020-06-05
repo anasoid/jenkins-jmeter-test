@@ -51,10 +51,7 @@ parallel  startNodes
 def prepareJmeterNode(serverSSH) {
 
     return {
-    stage('Master wait slaves ') {
-      sh "sleep 5"
 
-    }
 
 
     stage('Prepare Node  ' + serverSSH) {
@@ -96,7 +93,7 @@ def startJmeterSlave(serverSSH) {
       remote.user = 'root'
       remote.password = 'root'
       remote.allowAnyHosts = true
-      sshCommand remote: remote,  command: "export JAVA_HOME=/usr/local/openjdk-8; cd /test; /jmeter/bin/jmeter-server.bat "
+      sshCommand remote: remote,  command: "export JAVA_HOME=/usr/local/openjdk-8; cd /test; /jmeter/bin/jmeter-server "
 
 
     }
@@ -107,7 +104,10 @@ def startJmeterSlave(serverSSH) {
 def startJmeterMaster(serverSSH) {
 
     return {
+    stage('Master wait slaves ') {
+      sh "sleep 5"
 
+    }
 
 
     stage('Start Master ' + serverSSH) {
