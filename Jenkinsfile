@@ -7,7 +7,7 @@
 // Our initial list of strings we want to echo in parallel
 def stringsToEcho = ["192.168.99.100:2222", "192.168.99.100:2223", "192.168.99.100:2224"]
 
-
+node {
 checkout scm 
 
 // The map we'll store the parallel steps in before executing them.
@@ -22,7 +22,7 @@ def stepsForParallel = stringsToEcho.collectEntries {
 // hence the above.
 parallel stepsForParallel
 
-
+}
 
 // Take the string and echo it.
 def prepareJmeterNode(serverSSH) {
@@ -32,7 +32,7 @@ def prepareJmeterNode(serverSSH) {
     // that explicitly, or use { -> } syntax.
     return {
 
-node {
+
 
     stage('Prepare Node  ' + serverSSH) {
       echo serverSSH
@@ -54,5 +54,5 @@ node {
 
     }
   }
-  }
+  
 }
