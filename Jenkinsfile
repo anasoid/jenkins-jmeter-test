@@ -7,7 +7,7 @@ def stringsToEcho = ["192.168.99.100:2222", "192.168.99.100:2223", "192.168.99.1
 
 // The map we'll store the parallel steps in before executing them.
 def stepsForParallel = stringsToEcho.collectEntries {
-    ["echoing ${it}" : transformIntoStep(it)]
+    ["echoing ${it}" : prepareJmeterNode(it)]
 }
 
 // Actually run the steps in parallel - parallel takes a map as an argument,
