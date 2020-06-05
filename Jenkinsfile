@@ -11,21 +11,17 @@ def slaves = ["192.168.99.100:2223", "192.168.99.100:2224"]
 node {
 checkout scm 
 
-// The map we'll store the parallel steps in before executing them.
+// Prepare Jmeter node.
 def prepareForParallel = slaves.collectEntries {
-    ["echoing ${it}" : prepareJmeterNode(it)]
+    ["Prepare ${it}" : prepareJmeterNode(it)]
 }
-prepareForParallel.putAt("echoing ${master}",prepareJmeterNode(master))
+prepareForParallel.putAt("Prepare ${master}",prepareJmeterNode(master))
+
+
 
 
 // Prepare Jmeter node.
-def slaveForParallel = slaves.collectEntries {
-    ["node ${it}" : prepareJmeterNode(it)]
-}
-prepareForParallel.putAt("node ${master}",prepareJmeterNode(master))
-
-// Prepare Jmeter node.
-def startMaster =   [ "node ${master}": startJmeterMaster(master) ]
+def startMaster =   [ "Start ${master}": startJmeterMaster(master) ]
 
 
 // Actually run the steps in parallel - parallel takes a map as an argument,
@@ -34,20 +30,9 @@ def startMaster =   [ "node ${master}": startJmeterMaster(master) ]
     
 
 
-parallel {
+parallel prepareForParallel
 
-    prepareForParallel
-
-}
-parallel {
-        
-
- 
-    startMaster
-        
-
- 
-}
+parallel  startMaster
  
 
 
