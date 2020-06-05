@@ -30,7 +30,7 @@ def startMaster =   [ "node ${master}": startJmeterMaster(master) ]
 
 // Actually run the steps in parallel - parallel takes a map as an argument,
 // hence the above.
-stages {
+
     
 
 
@@ -39,10 +39,19 @@ parallel {
     prepareForParallel
 
 }
- startMaster
+parallel {
+        
 
+ 
+    startMaster
+        
 
+ 
 }
+ 
+
+
+
 }
 
 // PrepareJmeterNode
