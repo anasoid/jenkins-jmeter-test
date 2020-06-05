@@ -3,7 +3,7 @@
 // parallel.
 
 // Our initial list of strings we want to echo in parallel
-def stringsToEcho = ["a", "b", "c", "d"]
+def stringsToEcho = ["192.168.99.100:2222", "192.168.99.100:2223", "192.168.99.100:2224"]
 
 // The map we'll store the parallel steps in before executing them.
 def stepsForParallel = stringsToEcho.collectEntries {
@@ -13,6 +13,8 @@ def stepsForParallel = stringsToEcho.collectEntries {
 // Actually run the steps in parallel - parallel takes a map as an argument,
 // hence the above.
 parallel stepsForParallel
+
+
 
 // Take the string and echo it.
 def transformIntoStep(inputString) {
@@ -24,5 +26,18 @@ def transformIntoStep(inputString) {
         stage(inputString) {
             echo inputString
         }
+        
+           def remote = [:]
+
+    stage('Prepare Node  ' + inputString) {
+      def remote = [:]
+          remote.name = 'test'
+      remote.host = 'test.domain.com'
+      remote.user = 'root'
+      remote.password = 'root'
+      remote.allowAnyHosts = true
+      sshCommand remote: remote, command: "ls -lrt"
+      sshCommand remote: remote, command: "for i in {1..5}; do echo -n \"Loop \$i \"; date ; sleep 1; done"
+    }
     }
 }
