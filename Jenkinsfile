@@ -18,18 +18,31 @@ def prepareForParallel = slaves.collectEntries {
 prepareForParallel.putAt("echoing ${master}",prepareJmeterNode(master))
 
 
-// The map we'll store the parallel steps in before executing them.
+// Prepare Jmeter node.
 def slaveForParallel = slaves.collectEntries {
-    ["echoing ${it}" : prepareJmeterNode(it)]
+    ["node ${it}" : prepareJmeterNode(it)]
 }
-prepareForParallel.putAt("echoing ${master}",prepareJmeterNode(master))
+prepareForParallel.putAt("node ${master}",prepareJmeterNode(master))
+
+// Prepare Jmeter node.
+def startMaster =   [ "node ${master}": startJmeterMaster(master) ]
+
 
 // Actually run the steps in parallel - parallel takes a map as an argument,
 // hence the above.
-parallel prepareForParallel
+stages {
+    
 
-startJmeterMaster(master)
 
+parallel {
+
+    prepareForParallel
+
+}
+ startMaster
+
+
+}
 }
 
 // PrepareJmeterNode
