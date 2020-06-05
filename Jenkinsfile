@@ -71,6 +71,7 @@ def prepareJmeterNode(serverSSH) {
       sshCommand remote: remote, command: "mkdir /reports"
       sshPut remote: remote, from: 'test', into: '/'
       sshCommand remote: remote, command: "ls -la /test"
+      sshCommand remote: remote,pty:true, command: "printenv"
 
     }
   }
@@ -93,7 +94,7 @@ def startJmeterSlave(serverSSH) {
       remote.user = 'root'
       remote.password = 'root'
       remote.allowAnyHosts = true
-      sshCommand remote: remote,  command: "export JAVA_HOME=/usr/local/openjdk-8; cd /test; /jmeter/bin/jmeter-server "
+      sshCommand remote: remote,  command: "export JAVA_HOME=/usr/local/openjdk-8; cd /jmeter/bin; /jmeter/bin/jmeter-server "
 
 
     }
@@ -120,7 +121,7 @@ def startJmeterMaster(serverSSH) {
       remote.user = 'root'
       remote.password = 'root'
       remote.allowAnyHosts = true
-      sshCommand remote: remote,  command: "export JAVA_HOME=/usr/local/openjdk-8; cd /test; /jmeter/bin/jmeter -X -n -f -r -e -l /tmp/results.jtl  -t  ./example.jmx -o /reports -Jremote_hosts=jmeter-slave1,jmeter-slave2"
+      sshCommand remote: remote,  command: "export JAVA_HOME=/usr/local/openjdk-8; cd /jmeter/bin; /jmeter/bin/jmeter -X -n -f -r -e -l /tmp/results.jtl  -t  /test/example.jmx -o /reports -Jremote_hosts=jmeter-slave1,jmeter-slave2"
 
 
     }
