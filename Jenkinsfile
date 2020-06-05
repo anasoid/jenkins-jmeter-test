@@ -30,8 +30,8 @@ def startMaster =   [ "Start Master ${master}": startJmeterMaster(master) ]
 def startNodes= [:]
 
 
-startNodes.puAll(startSlaves)
-startNodes.puAll(startMaster)
+startNodes.putAll(startSlaves)
+startNodes.putAll(startMaster)
 // Actually run the steps in parallel - parallel takes a map as an argument,
 // hence the above.
 
