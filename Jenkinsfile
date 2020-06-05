@@ -51,8 +51,8 @@ def prepareJmeterNode(serverSSH) {
       remote.allowAnyHosts = true
       sh "ls -l"
       sshCommand remote: remote, command: "ls -la /"
-      sshRemove remote: remote, path: "/test"
-      sshRemove remote: remote, path: "/reports"
+      shCommand remote: remote, command: "rm -rf /test"
+      shCommand remote: remote, command: "rm -rf /reports"
       shCommand remote: remote, command: "mkdir /reports"
       sshPut remote: remote, from: 'test', into: '/'
       sshCommand remote: remote, command: "ls -la /test"
