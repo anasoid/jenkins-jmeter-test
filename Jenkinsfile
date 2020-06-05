@@ -5,22 +5,23 @@
 // parallel.
 
 // Our initial list of strings we want to echo in parallel
-def stringsToEcho = ["192.168.99.100:2222", "192.168.99.100:2223", "192.168.99.100:2224"]
+def master = "192.168.99.100:2222"
+def slaves = ["192.168.99.100:2223", "192.168.99.100:2224"]
 
 node {
 checkout scm 
 
 // The map we'll store the parallel steps in before executing them.
-def stepsForParallel = stringsToEcho.collectEntries {
+def prepareForParallel = slaves.collectEntries {
     ["echoing ${it}" : prepareJmeterNode(it)]
 }
-
+prepareForParallel.prepareForParallel("echoing ${master}",master)
 
 
 
 // Actually run the steps in parallel - parallel takes a map as an argument,
 // hence the above.
-parallel stepsForParallel
+parallel prepareForParallel
 
 }
 
@@ -44,13 +45,11 @@ def prepareJmeterNode(serverSSH) {
       remote.user = 'root'
       remote.password = 'root'
       remote.allowAnyHosts = true
-      echo serverSSH
       sh "ls -l"
       sshCommand remote: remote, command: "ls -la /"
       sshRemove remote: remote, path: "/test"
       sshPut remote: remote, from: 'test', into: '/'
-      sshCommand remote: remote, command: "ls -lrt"
-      sshRemove remote: remote, path: "/test"
+      sshCommand remote: remote, command: "ls -la /test"
 
     }
   }
