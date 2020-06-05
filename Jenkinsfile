@@ -17,22 +17,22 @@ parallel stepsForParallel
 
 
 // Take the string and echo it.
-def transformIntoStep(inputString) {
+def prepareJmeterNode(serverSSH) {
     // We need to wrap what we return in a Groovy closure, or else it's invoked
     // when this method is called, not when we pass it to parallel.
     // To do this, you need to wrap the code below in { }, and either return
     // that explicitly, or use { -> } syntax.
     return {
-        stage(inputString) {
-            echo inputString
+        stage(serverSSH) {
+            echo serverSSH
         }
         
-           def remote = [:]
 
-    stage('Prepare Node  ' + inputString) {
+
+    stage('Prepare Node  ' + serverSSH) {
       def remote = [:]
-          remote.name = 'test'
-      remote.host = 'test.domain.com'
+          remote.name = serverSSH
+      remote.host = server
       remote.user = 'root'
       remote.password = 'root'
       remote.allowAnyHosts = true
