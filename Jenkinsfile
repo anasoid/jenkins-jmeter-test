@@ -72,7 +72,7 @@ def prepareJmeterNode(serverSSH) {
       sshPut remote: remote, from: 'test', into: '/'
       sshCommand remote: remote, command: "ls -la /test"
       sshCommand remote: remote,pty:true, command: "printenv"
-
+      sshCommand remote: remote, command: "printenv"
     }
   }
   
