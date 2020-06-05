@@ -18,19 +18,23 @@ def prepareForParallel = slaves.collectEntries {
 prepareForParallel.putAt("echoing ${master}",prepareJmeterNode(master))
 
 
+// The map we'll store the parallel steps in before executing them.
+def slaveForParallel = slaves.collectEntries {
+    ["echoing ${it}" : prepareJmeterNode(it)]
+}
+prepareForParallel.putAt("echoing ${master}",prepareJmeterNode(master))
 
 // Actually run the steps in parallel - parallel takes a map as an argument,
 // hence the above.
 parallel prepareForParallel
 
+startJmeterMaster(master)
+
 }
 
-// Take the string and echo it.
+// PrepareJmeterNode
 def prepareJmeterNode(serverSSH) {
-    // We need to wrap what we return in a Groovy closure, or else it's invoked
-    // when this method is called, not when we pass it to parallel.
-    // To do this, you need to wrap the code below in { }, and either return
-    // that explicitly, or use { -> } syntax.
+
     return {
 
 
@@ -48,8 +52,35 @@ def prepareJmeterNode(serverSSH) {
       sh "ls -l"
       sshCommand remote: remote, command: "ls -la /"
       sshRemove remote: remote, path: "/test"
+      sshRemove remote: remote, path: "/reports"
+      shCommand remote: remote, command: "mkdir /reports"
       sshPut remote: remote, from: 'test', into: '/'
       sshCommand remote: remote, command: "ls -la /test"
+
+    }
+  }
+  
+}
+// PrepareJmeterNode
+def startJmeterMaster(serverSSH) {
+
+    return {
+
+
+
+    stage('Prepare Node  ' + serverSSH) {
+      echo serverSSH
+      def remote = [:]
+      def hostport= serverSSH.tokenize(":")
+      remote.name = serverSSH
+      remote.host = hostport[0]
+      remote.port = Integer.parseInt(hostport[1])
+      remote.user = 'root'
+      remote.password = 'root'
+      remote.allowAnyHosts = true
+      sh "ls -l"
+      sshCommand remote: remote, command: "cd /test; jmeter -X -n -f -r -e -l /tmp/results.jtl  -t  ./example.jmx -o /reports "
+
 
     }
   }
