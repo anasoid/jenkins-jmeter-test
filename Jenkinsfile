@@ -17,13 +17,21 @@ def prepareForParallel = slaves.collectEntries {
 }
 prepareForParallel.putAt("Prepare ${master}",prepareJmeterNode(master))
 
+// Prepare Jmeter node.
+def startSlaves = slaves.collectEntries {
+    ["Start slave ${it}" : startJmeterSlave(it)]
+}
 
 
 
 // Prepare Jmeter node.
-def startMaster =   [ "Start ${master}": startJmeterMaster(master) ]
+def startMaster =   [ "Start Master ${master}": startJmeterMaster(master) ]
+
+def startNodes= [:]
 
 
+startNodes.puAll(startSlaves)
+startNodes.puAll(startMaster)
 // Actually run the steps in parallel - parallel takes a map as an argument,
 // hence the above.
 
@@ -32,7 +40,7 @@ def startMaster =   [ "Start ${master}": startJmeterMaster(master) ]
 
 parallel prepareForParallel
 
-parallel  startMaster
+parallel  startNodes
  
 
 
@@ -43,7 +51,10 @@ parallel  startMaster
 def prepareJmeterNode(serverSSH) {
 
     return {
+    stage('Master wait slaves ') {
+      sh "sleep 5"
 
+    }
 
 
     stage('Prepare Node  ' + serverSSH) {
@@ -69,6 +80,30 @@ def prepareJmeterNode(serverSSH) {
   
 }
 // PrepareJmeterNode
+def startJmeterSlave(serverSSH) {
+
+    return {
+
+
+
+    stage('Start slave ' + serverSSH) {
+      echo serverSSH
+      def remote = [:]
+      def hostport= serverSSH.tokenize(":")
+      remote.name = serverSSH
+      remote.host = hostport[0]
+      remote.port = Integer.parseInt(hostport[1])
+      remote.user = 'root'
+      remote.password = 'root'
+      remote.allowAnyHosts = true
+      sshCommand remote: remote,  command: "export JAVA_HOME=/usr/local/openjdk-8; cd /test; /jmeter/bin/jmeter-server.bat "
+
+
+    }
+  }
+  
+}
+// PrepareJmeterNode
 def startJmeterMaster(serverSSH) {
 
     return {
@@ -85,7 +120,7 @@ def startJmeterMaster(serverSSH) {
       remote.user = 'root'
       remote.password = 'root'
       remote.allowAnyHosts = true
-      sshCommand remote: remote,  command: "export JAVA_HOME=/usr/local/openjdk-8; cd /test; /jmeter/bin/jmeter -X -n -f  -e -l /tmp/results.jtl  -t  ./example.jmx -o /reports "
+      sshCommand remote: remote,  command: "export JAVA_HOME=/usr/local/openjdk-8; cd /test; /jmeter/bin/jmeter -X -n -f -r -e -l /tmp/results.jtl  -t  ./example.jmx -o /reports -Jremote_hosts=jmeter-slave1,jmeter-slave2"
 
 
     }
