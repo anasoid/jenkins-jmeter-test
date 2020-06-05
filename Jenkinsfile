@@ -85,7 +85,7 @@ def startJmeterMaster(serverSSH) {
       remote.user = 'root'
       remote.password = 'root'
       remote.allowAnyHosts = true
-      sshCommand remote: remote,  command: "cd /test; /jmeter/bin/jmeter -X -n -f  -e -l /tmp/results.jtl  -t  ./example.jmx -o /reports "
+      sshCommand remote: remote,  command: "export JAVA_HOME=/usr/local/openjdk-8; cd /test; /jmeter/bin/jmeter -X -n -f  -e -l /tmp/results.jtl  -t  ./example.jmx -o /reports "
 
 
     }
